@@ -1,0 +1,14 @@
+A. False. When X = INT_MIN, Y = INT_MIN + 1; -x = INT_MIN while -y = INT_MAX;
+   Disproved.
+B. True. (x+y<<4) = (x+y)*2^4; => (x+y)<<4 + y = y*2^4 + x* 2^4-y-x
+   => 17y + 15x;
+C.True. since ~x + x + 1 = 0(overflow). => ~x + 1 = -x
+  => ~(x+y) + 1 = -(x+y)(take x+y as a whole)
+  => ~(x+y) = -(x+y) - 1
+  => ~(x+y) = -x - y - 1
+  => ~(x+y) = ~x + 1 + ~y + 1 - 1
+  => ~(x+y) = ~x + ~y + 1
+D. True. Since the casting only change the value of the x and y, but it will not change some of the internal properties. (x+y) always equals to the -(y-x) no matter what the values of x and y are. Hence the expression is always true.
+E. True. since x is a signed value. When shift x by two bits to the right and then shift x by 2 bits to the left, the two least significant bits may be changed. If either of the two bits are 1, then after the switch the bits will be zero, and the value of x will be smaller than the original one. However, when none of the two bits are 1, then after the switch none of the two bits will be changed and the value of x will stay the same. Hence, the LHS is always smaller or equal to x.
+F. True. When x is a negative number. The shift will result in the changing of the most significant bit, but the ux&(-1<<31) will add the value up to the same as before. When x is nonnegative, the shift of ux will not be different from the shift from x and the second term will evaluates zero, which is the same.
+G. False. When x takes a negative number, say -1. Then LHS = -1. while the RHS = 1. Disproved

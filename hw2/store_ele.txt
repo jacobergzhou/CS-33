@@ -1,0 +1,19 @@
+
+A. according to the equation:
+&A[i][j][k] = A + L * (S * T * i + T * j + k)
+
+B. 3j->rax
+   13j->rax
+   i->rsi
+   64i->rsi
+   65i->rdi
+   65i+13j->rdi
+   65ji+13i+k->rdx
+
+   so base on comments
+   8*R*S*T=3640
+   S*T=65
+   T=13
+   =>
+   S=5
+   R=7

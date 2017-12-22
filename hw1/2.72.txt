@@ -1,0 +1,3 @@
+a.Since the size_of operator returns a value of type size_t which is an unsigned value. Hence, the int type maxbytes is cast to unsigned. Hence, when the value of maxbytes is smaller than the sizeof function, the unsigned value will automatically overflows and produce a positive result when it is supposed to return a negative number.
+
+b. we can simply change the operation to if(maxbytes > 0 && maxbytes >= sizeof(val)), in this way we can make sure the code does not run when maxbytes is zero.

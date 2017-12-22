@@ -1,0 +1,11 @@
+answers.txt
+
+12.17
+a) Since the main thread did not wait for the peel thread, the program will exit directly other than printing anything.
+
+b)change to pthread_exit or pthread_join
+
+12.25
+The program is thread-safe because it uses mutex, i.e. semphore synchronization.
+
+However, the program is not reentrant because the program uses the same mutex and static byte_cnt that may cause different result if the program is interrupted and then resumed.(share the same memory)

@@ -1,0 +1,100 @@
+
+For the examining behavior part of this lab, we are asked to test three ways of compiling process on the same function. The following are the results of the three processes:
+
+1)the function always returns 0(O2)
+
+The first option use only a very limited amount of optimization and will produce result that always equal 0;
+
+LFB0:
+	.cfi_startproc
+	xorl	%eax, %eax
+	ret
+	.cfi_endproc
+.LFE0:
+	.size	testovf, .-testovf
+	.ident	"GCC: (GNU) 4.8.5 20150623 (Red Hat 4.8.5-16)"
+	.section	.note.GNU-stack,"",@progbits
+
+For the above case, the compiler are told to optimize the program using -O2. Hence, it decides that the mathematical addition of some number will always be larger than the orginal one and it decides to throw the value and return 0 instead.
+
+2)this process consider overflowing situation as always automatically wrap around.(-O2 -fwrapv)
+
+testovf:
+.LFB0:
+	.cfi_startproc
+	movabsq	$9223372036854775807, %rax
+	addq	%rdi, %rax
+	cmpq	%rdi, %rax
+	setl	%al
+	ret
+	.cfi_endproc
+.LFE0:
+	.size	testovf, .-testovf
+	.ident	"GCC: (GNU) 4.8.5 20150623 (Red Hat 4.8.5-16)"
+	.section	.note.GNU-stack,"",@progbits
+
+In this case, the compiler actually checks to see whether the addition of n + 9223372036854775807 is smaller than n. If the result is indeed smaller, it will return 1, otherwise the result will return 0;
+
+3)this process will carefully check each boundary situation and also include computation to check for the potential overflow possibility since this process consider overflow as undefined behavior.(-O2 -fsanitize=undefined)
+
+
+testovf:
+.LFB0:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushq	%rbx
+	.cfi_def_cfa_offset 24
+	.cfi_offset 3, -24
+	movabsq	$9223372036854775807, %rdx
+	movq	%rdi, %rbp
+	movq	%rdi, %rbx
+	subq	$8, %rsp
+	.cfi_def_cfa_offset 32
+	addq	%rdx, %rbp
+	jo	.L6
+.L2:
+	cmpq	%rbx, %rbp
+	setl	%al
+	addq	$8, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 24
+	popq	%rbx
+	.cfi_def_cfa_offset 16
+	popq	%rbp
+	.cfi_def_cfa_offset 8
+	ret
+.L6:
+	.cfi_restore_state
+	movq	%rdi, %rsi
+	movl	$.Lubsan_data0, %edi
+	call	__ubsan_handle_add_overflow
+	jmp	.L2
+	.cfi_endproc
+.LFE0:
+	.size	testovf, .-testovf
+	.section	.rodata.str1.1,"aMS",@progbits,1
+.LC0:
+	.string	"test3.c"
+	.data
+	.align 16
+	.type	.Lubsan_data0, @object
+	.size	.Lubsan_data0, 24
+.Lubsan_data0:
+	.quad	.LC0
+	.long	5
+	.long	14
+	.quad	.Lubsan_type0
+	.align 2
+	.type	.Lubsan_type0, @object
+	.size	.Lubsan_type0, 15
+.Lubsan_type0:
+	.value	0
+	.value	13
+	.string	"'long int'"
+	.ident	"GCC: (GNU) 7.2.0"
+	.section	.note.GNU-stack,"",@progbits
+
+
+The third option was compiling the function using -O2 -fsanitize=undefined. This assembly language is very long since the option -fsanitize=undefined tells the compiler to include computations to detect undefined behavior at runtime. Specifically, the compiler has now introduced a check at the machine level when the addition occurs to determine whether or not it overflowed.

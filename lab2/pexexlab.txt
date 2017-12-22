@@ -1,0 +1,34 @@
+
+Part 1:
+1)~eggert/src/emacs-25.2/
+Use this command to examine the program provided
+
+2)(gdb) break Ftimes
+This command sets the break point before each time the ftimes function is called. Hence, by inserting break points, we are enabled to see what will happen and examine the instructions
+
+3)(gdb) set disassemble-next-line on
+This command is suggested by the spec. Using this command, the program will produce and print the assembly code each time after the encounter of the break points.
+
+4)-Q -batch -eval '(print (* 1250284240 -1844255039))'
+pass in the argument and try to see what will happen
+
+5)set logging on
+enfore the gdb.txt to document each move that the program make
+
+6)(gdb) si
+step into the program whenever the program stops due to the presence of a break point.
+
+7)(optional) info registers $(name)
+using this command to see the value storesd by each register whose value has been changed. It can also check the rsp pointer when the program uses the push/pop instruction.
+
+This part was generally intended for us to try to understand the gdb compoler by practicing the use of break points. During the process of this part, I was orginally confused with the fourth column that we are asked to provide, cause the spec did not provide a way of doing that. Then I look through the powerpoint and discovered the use of info registers.
+
+Part 2:
+This part is about comparing the different results of different compilation process and come up with the explanation of why the results are different. According to the spec, we are asked to run this program under three different levels of optimization. First, I used sublime texts to copy the orginal code and created three exactly same files, test1.c, test2.c and test3.c. I use the cyberduck to upload thess files to my linux servers. Then I use the command:
+gcc -O2 -S test1.c
+gcc -O2 -fwrapv -S test2.c
+/usr/local/cs/bin/gcc -S -O2 -fsanitize=undefined test3.c
+These three commands give me three .s files in the directory that are in the version of assembly code. Then by comparing and examining the certain assembly, I understand the difference and reasons that these programs look different.
+
+Part 3:
+The final part of answering different questions. This part seems a bit intriguing to me cause many of the background knowledge required for these solutions are beyond what I had. Hence, in order to have a better understanding, I used Google in order to learn more about Elisp and understand how it did computations. I practiced a lot of commands on gdb. Finally I used the emacs source code in order to get context for some of the questions.
